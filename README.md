@@ -38,7 +38,7 @@
     </script>
 ```
 
-## 接口
+## API接口
 ```javascript
     //上一张
     slide.prev();
