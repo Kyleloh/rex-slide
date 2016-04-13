@@ -1,0 +1,52 @@
+*{margin:0; padding: 0;}
+ul, li{list-style: none;}
+
+.rex-slide{width:600px; margin: 0 auto; position: relative; border: 4px solid #09c; padding:0 0 10px;}
+.rex-slide .showBox {overflow: hidden; }
+.rex-slide .showBox ul {width: 10000%;}
+.rex-slide .showBox ul li{float: left; width:600px;}
+.rex-slide .showBox img{width: 100%; display: block;}
+
+.rex-slide .listBox{width: 540px; margin: 10px auto 0; overflow: hidden;}
+.rex-slide .listBox ul {width: 10000%;}
+.rex-slide .listBox ul li{float: left; width:120px; margin-right: 10px; cursor: pointer; opacity: 0.5;}
+.rex-slide .listBox ul .on{opacity: 1;}
+.rex-slide .listBox img{width: 100%; display: block;}
+
+.rex-slide .btn{width: 20px; height: 75px; 
+	background: #09c; display: block; position: absolute;
+	bottom: 10px;
+    overflow:hidden;
+}
+.rex-slide .btn-prev{left: 0px;}
+.rex-slide .btn-prev:after{
+    content:"";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 15px solid #09c;
+    border-bottom: 15px solid #09c;
+    border-right: 10px solid #fff;
+    border-left: 10px solid #09c;
+    background: red;
+    position: absolute;
+    top: 50%;
+    left: -50%;
+    margin: -15px 0 0 3px;
+}
+.rex-slide .btn-next{right: 0px;}
+.rex-slide .btn-next:after{
+    content:"";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 15px solid #09c;
+    border-bottom: 15px solid #09c;
+    border-left: 10px solid #fff;
+    border-right: 10px solid #09c;
+    background: red;
+    position: absolute;
+    top: 50%;
+    left: -50%;
+    margin: -15px 0 0 17px;
+}
