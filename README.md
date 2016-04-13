@@ -37,3 +37,15 @@
         })
     </script>
 ```
+
+## 接口
+```javascript
+    //上一张
+    slide.prev();
+
+    //下一张
+    slide.next();
+
+    //去到指定位置
+    slide.goto(2);
+```
