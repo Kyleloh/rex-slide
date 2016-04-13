@@ -126,12 +126,12 @@
             if(num<self.opts.lock){
                 self.data.smallNow=0;
             }else if(num>self.data.count-(self.opts.show-self.opts.lock)){
-
                 self.data.smallNow=self.data.count-self.opts.show;
             }else{
                 self.data.smallNow=num-1;
             }
             this.dom.smallLi.removeClass("on").eq(num).addClass("on");
+            if(self.data.count<self.opts.show){return;}
             self.dom.smallUl.animate({marginLeft:-self.data.smallNow*self.opts.sWidth});
         },
 
