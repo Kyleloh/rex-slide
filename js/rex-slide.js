@@ -57,6 +57,30 @@
 
             // 加载第一张大图
             this.lazyLoad(0);
+
+            // 自动轮播
+            this.autoplay();
+        },
+
+        // 自动轮播
+        "autoplay" : function(){
+            var self = this;
+            if(self.opts.autoplay!=0){
+
+                play();
+                self.obj.hover(function(){
+                    clearInterval(self.data.timer);
+                },function(){
+                    play();
+                });
+            }
+
+            function play(){
+                    clearInterval(self.data.timer);
+                    self.data.timer = setInterval(function(){
+                        self.next();
+                    },self.opts.autoplay);
+            }
         },
 
         // 获取dom元素
@@ -139,10 +163,7 @@
             var self = this,
                 liDom = self.dom.bigLi.eq(num).find("img");
             if(typeof liDom.attr("data-url") != "undefined"){
-
                 liDom.attr("src",liDom.attr("data-url")).removeAttr("data-url");
-
-                
             }
             
         }
@@ -152,7 +173,8 @@
         "bWidth" : 600, //大图宽度
         "sWidth" : 130, //小图宽度+右边距
         "show" : 4,  //小图显示个数
-        "lock" : 1 //小图锁定位置
+        "lock" : 1, //小图锁定位置
+        "autoplay" : 4000
     };
 
     $.rexSlide = function(selector,opts){
