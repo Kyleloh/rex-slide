@@ -152,7 +152,7 @@
             }else if(num>self.data.count-(self.opts.show-self.opts.lock)){
                 self.data.smallNow=self.data.count-self.opts.show;
             }else{
-                self.data.smallNow=num-1;
+                self.data.smallNow=num-self.opts.lock;
             }
             this.dom.smallLi.removeClass("on").eq(num).addClass("on");
             if(self.data.count<self.opts.show){return;}
