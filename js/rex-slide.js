@@ -55,9 +55,6 @@
             // 静态事件
             this.staticEvent();
 
-            // 加载第一张大图
-            this.lazyLoad(0);
-
             // 自动轮播
             this.autoplay();
         },
@@ -85,16 +82,22 @@
 
         // 获取dom元素
         "getDom" : function(){
+            var self=this;
             this.dom.bigUl = this.obj.find(".showBox ul");
             this.dom.bigLi = this.obj.find(".showBox ul li");
             this.dom.smallUl = this.obj.find(".listBox ul");
             this.dom.smallLi = this.obj.find(".listBox ul li");
             this.dom.prev = this.obj.find(".btn-prev");
             this.dom.next = this.obj.find(".btn-next");
+            this.lazyLoad(0);
+            this.lazyLoad(this.dom.bigLi.size()-1);
+            this.dom.bigUl.prepend(this.dom.bigLi.last().clone().css("marginLeft",-self.opts.bWidth+"px"));
+            this.dom.bigUl.append(this.dom.bigLi.eq(0).clone());
         },
 
         // 处理数据
         "getData" : function(){
+            this.data.work = true;
             this.data.bigNow=0;
             this.data.smallNow = 0;
             this.data.count = this.dom.smallLi.size();
@@ -126,14 +129,26 @@
 
         "prev" : function(){
             var self = this;
-            self.data.bigNow = self.data.bigNow>0 ? self.data.bigNow-1 : self.data.count-1;
-            self.goto(self.data.bigNow);
+            if(self.data.work){
+                self.data.work = false;
+                self.data.bigNow = self.data.bigNow>0 ? self.data.bigNow-1 : self.data.count-1;
+                if(self.data.bigNow == self.data.count-1){
+                    self.dom.bigUl.css("marginLeft",-self.data.count*self.opts.bWidth);
+                }
+                self.goto(self.data.bigNow);
+            }
         },
 
         "next" : function(){
             var self = this;
-            self.data.bigNow = self.data.bigNow<self.data.count-1 ? self.data.bigNow+1 : 0;
-            self.goto(self.data.bigNow);
+            if(self.data.work){
+                self.data.work = false;
+                self.data.bigNow = self.data.bigNow<self.data.count-1 ? self.data.bigNow+1 : 0;
+                if(self.data.bigNow==0){
+                    self.dom.bigUl.css("marginLeft",self.opts.bWidth);
+                }
+                self.goto(self.data.bigNow);
+            }
         },
 
         // 去到某一张
@@ -156,7 +171,9 @@
             }
             this.dom.smallLi.removeClass("on").eq(num).addClass("on");
             if(self.data.count<self.opts.show){return;}
-            self.dom.smallUl.animate({marginLeft:-self.data.smallNow*self.opts.sWidth});
+            self.dom.smallUl.animate({marginLeft:-self.data.smallNow*self.opts.sWidth},function(){
+                self.data.work=true;
+            });
         },
 
         "lazyLoad" : function(num){
