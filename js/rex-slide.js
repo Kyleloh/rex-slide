@@ -86,6 +86,9 @@
         // 开启自动轮播功能
         "startAuto" : function(){
             var self = this;
+            if(self.opts.autoplay==0){
+                self.opts.autoplay=Slide.Default.autoplay;
+            }
             self.play();
             self.obj.on("mouseover",function(){
                 self.stop();
