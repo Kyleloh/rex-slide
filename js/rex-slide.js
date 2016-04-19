@@ -38,6 +38,12 @@
             },
             "next" : function(){
                 self.next.call(self);
+            },
+            "startAuto" : function(){
+                self.startAuto.call(self);
+            },
+            "stopAuto" : function(){
+                self.stopAuto.call(self);
             }
         }
         
@@ -63,23 +69,37 @@
         "autoplay" : function(){
             var self = this;
             if(self.opts.autoplay!=0){
-
-                play();
-                self.obj.hover(function(){
-                    clearInterval(self.data.timer);
-                },function(){
-                    play();
-                });
-            }
-
-            function play(){
-                    clearInterval(self.data.timer);
-                    self.data.timer = setInterval(function(){
-                        self.next();
-                    },self.opts.autoplay);
+                self.startAuto();
             }
         },
-
+        "play" : function(){
+            var self=this;
+            clearInterval(self.data.timer);
+            self.data.timer = setInterval(function(){
+                self.next();
+            },self.opts.autoplay);
+        },
+        "stop" : function(){
+            var self=this;
+            clearInterval(self.data.timer);
+        },
+        // 开启自动轮播功能
+        "startAuto" : function(){
+            var self = this;
+            self.play();
+            self.obj.on("mouseover",function(){
+                self.stop();
+            }).on("mouseout",function(){
+                self.play();
+            });
+        },
+        // 移除自动轮播功能
+        "stopAuto" : function(){
+            var self = this;
+            self.stop();
+            self.obj.off("mouseover");
+            self.obj.off("mouseout");
+        },
         // 获取dom元素
         "getDom" : function(){
             var self=this;
@@ -178,10 +198,16 @@
 
         "lazyLoad" : function(num){
             var self = this,
-                liDom = self.dom.bigLi.eq(num).find("img");
+                liDom = self.dom.bigLi.eq(num).find("img"),
+                smallLiDom = self.dom.smallLi.find("img");
             if(typeof liDom.attr("data-url") != "undefined"){
                 liDom.attr("src",liDom.attr("data-url")).removeAttr("data-url");
             }
+            smallLiDom.each(function(index){
+                if(Math.abs(index-num)<self.opts.show){
+                    $(this).attr("src",$(this).attr("data-url")).removeAttr("data-url");
+                }
+            });
             
         }
     };
