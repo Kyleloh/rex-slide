@@ -8,13 +8,15 @@
             <ul>
                 <li>
                     <img data-url="images/1.jpg" src="images/default.jpg" >
+                    <img data-url="images/1.jpg" src="images/default.jpg" >
                 </li>
             </ul>
         </div>
         <div class="listBox">
             <ul>
                 <li class="on">
-                    <img src="images/1.jpg">
+                    <img data-url="images/1.jpg" src="images/default.jpg" >
+                    <img data-url="images/1.jpg" src="images/default.jpg" >
                 </li>
             </ul>
         </div>
@@ -33,9 +35,9 @@
             "bWidth" : 600, //大图宽度
             "sWidth" : 130, //小图宽度+右边距
             "show" : 4, //小图显示个数
-			"lock" : 1, //小图锁定位置
-        	"autoplay" : 0 //自动轮播的时间间隔: 0代表不自动轮播, 默认4000;
-        })
+            "lock" : 1, //小图锁定位置
+            "autoplay" : 0 //自动轮播的时间间隔: 0代表不自动轮播, 默认4000;
+        });
     </script>
 ```
 
@@ -49,4 +51,10 @@
 
     //去到指定位置
     slide.goto(2);
+    
+    //开启轮播功能
+    slide.startAuto();
+    
+    //关闭轮播功能
+    slide.stopAuto();
 ```
