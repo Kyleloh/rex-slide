@@ -52,11 +52,14 @@
     Slide.prototype = {
         // 初始化
         "init" : function(){
-            // 获取dom元素
+            // 处理/获取 dom元素
             this.getDom();
 
             // 获取数据
             this.getData();
+
+            // 懒加载一次
+            this.lazyLoad();
 
             // 静态事件
             this.staticEvent();
@@ -83,6 +86,7 @@
             var self=this;
             clearInterval(self.data.timer);
         },
+
         // 开启自动轮播功能
         "startAuto" : function(){
             var self = this;
@@ -96,6 +100,7 @@
                 self.play();
             });
         },
+
         // 移除自动轮播功能
         "stopAuto" : function(){
             var self = this;
@@ -103,19 +108,20 @@
             self.obj.off("mouseover");
             self.obj.off("mouseout");
         },
+
         // 获取dom元素
         "getDom" : function(){
             var self=this;
-            this.dom.bigUl = this.obj.find(".showBox ul");
-            this.dom.bigLi = this.obj.find(".showBox ul li");
-            this.dom.smallUl = this.obj.find(".listBox ul");
-            this.dom.smallLi = this.obj.find(".listBox ul li");
-            this.dom.prev = this.obj.find(".btn-prev");
-            this.dom.next = this.obj.find(".btn-next");
-            this.lazyLoad(0);
-            this.lazyLoad(this.dom.bigLi.size()-1);
-            this.dom.bigUl.prepend(this.dom.bigLi.last().clone().css("marginLeft",-self.opts.bWidth+"px"));
-            this.dom.bigUl.append(this.dom.bigLi.eq(0).clone());
+            self.dom.bigUl = self.obj.find(".showBox ul");
+            self.dom.bigLi = self.obj.find(".showBox ul li");
+            self.dom.smallUl = self.obj.find(".listBox ul");
+            self.dom.smallLi = self.obj.find(".listBox ul li");
+            self.dom.prev = self.obj.find(".btn-prev");
+            self.dom.next = self.obj.find(".btn-next");
+
+            // 大图首尾增加一个li
+            self.dom.bigUl.prepend(bigLazy.call(self.dom.bigLi.last()).clone().css("marginLeft",-self.opts.bWidth+"px"));
+            self.dom.bigUl.append(bigLazy.call(self.dom.bigLi.eq(0)).clone());
         },
 
         // 处理数据
@@ -133,23 +139,26 @@
 
             // 小图点击事件
             this.dom.smallUl.find("li").on("click",function(){
-                var _index = $(this).index();
-                self.data.bigNow = _index;
-                self.goto(self.data.bigNow);
+                if(!$(this).is(".on")){
+                    var _index = $(this).index();
+                    self.data.bigNow = _index;
+                    self.goto(self.data.bigNow);
+                }
             });
 
-            // 上一张
+            // 上一张按钮
             this.dom.prev.on("click",function(){
                 self.prev.call(self)
             });
 
-            // 下一张
+            // 下一张按钮
             this.dom.next.on("click",function(){
                 self.next.call(self)
             });
 
         },
 
+        // 上一张
         "prev" : function(){
             var self = this;
             if(self.data.work){
@@ -162,6 +171,7 @@
             }
         },
 
+        // 下一张
         "next" : function(){
             var self = this;
             if(self.data.work){
@@ -178,11 +188,9 @@
         "goto" : function(num){
             var self = this;
             if(num>self.data.count-1 || num<0){
-                console.log("参数有误");
                 return;
             }
             self.data.bigNow=num;
-            self.lazyLoad(self.data.bigNow);    // 懒加载大图
             self.dom.bigUl.animate({marginLeft:-self.data.bigNow*self.opts.bWidth});
 
             if(num<self.opts.lock){
@@ -197,23 +205,39 @@
             self.dom.smallUl.animate({marginLeft:-self.data.smallNow*self.opts.sWidth},function(){
                 self.data.work=true;
             });
+            self.lazyLoad();
         },
 
-        "lazyLoad" : function(num){
-            var self = this,
-                liDom = self.dom.bigLi.eq(num).find("img"),
-                smallLiDom = self.dom.smallLi.find("img");
-            if(typeof liDom.attr("data-url") != "undefined"){
-                liDom.attr("src",liDom.attr("data-url")).removeAttr("data-url");
-            }
-            smallLiDom.each(function(index){
-                if(Math.abs(index-num)<self.opts.show){
-                    $(this).attr("src",$(this).attr("data-url")).removeAttr("data-url");
+        // 懒加载
+        "lazyLoad" : function(){
+            var self = this;
+            // 大图懒加载
+            self.dom.bigLi.each(function(index){
+                if(index==self.data.bigNow){
+                    bigLazy.call($(this));
                 }
             });
-            
-        }
+
+            // 小图懒加载
+            self.dom.smallLi.each(function(index){
+                if(index>self.data.smallNow-1 && index < self.data.smallNow + self.opts.show){
+                    smallLazy.call($(this));
+                }
+            }); 
+        },
     };
+
+    // 处理对应li的懒加载内容
+    function bigLazy(){
+        var img = this.find("img[data-url]");
+        img.attr("src",img.attr("data-url")).removeAttr("data-url");
+        return this;
+    }
+    function smallLazy(){
+        var img = this.find("img[data-url]");
+        img.attr("src",img.attr("data-url")).removeAttr("data-url");
+        return this;
+    }
 
     Slide.Default = {
         "bWidth" : 600, //大图宽度
