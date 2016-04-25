@@ -191,7 +191,9 @@
                 return;
             }
             self.data.bigNow=num;
-            self.dom.bigUl.animate({marginLeft:-self.data.bigNow*self.opts.bWidth});
+            self.dom.bigUl.animate({marginLeft:-self.data.bigNow*self.opts.bWidth},function(){
+                self.data.work=true;
+            });
 
             if(num<self.opts.lock){
                 self.data.smallNow=0;
@@ -201,11 +203,9 @@
                 self.data.smallNow=num-self.opts.lock;
             }
             this.dom.smallLi.removeClass("on").eq(num).addClass("on");
-            if(self.data.count<self.opts.show){return;}
-            self.dom.smallUl.animate({marginLeft:-self.data.smallNow*self.opts.sWidth},function(){
-                self.data.work=true;
-            });
             self.lazyLoad();
+            if(self.data.count<self.opts.show){return;}
+            self.dom.smallUl.animate({marginLeft:-self.data.smallNow*self.opts.sWidth});
         },
 
         // 懒加载
